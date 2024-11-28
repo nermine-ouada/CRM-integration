@@ -1,5 +1,5 @@
 
-const Lead = require("../model/Lead");
+const Lead = require("../models/Lead");
 const mongoose = require('mongoose');
 const createLeadContoller = async (req,res) =>{
     try {
