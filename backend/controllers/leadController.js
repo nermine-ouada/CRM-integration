@@ -5,12 +5,14 @@ const createLeadContoller = async (req,res) =>{
     try {
 
        
-        const { description,statut} = req.body;
+        const { name,firstName,description,statut} = req.body;
 
         const lead = await Lead.create({
-            
+            name,
+            firstName,
             description ,
             statut,
+
         });
 
         res.json({
@@ -73,9 +75,9 @@ const deleteLeadByIdContoller = async (req,res) => {
 const updateLeadByIdContoller = async (req,res) => {
     try {
         const upd = req.params.id; 
-        const { description, statut } = req.body;
+        const { name,firstName,description, statut } = req.body;
         const updatedLead = await Lead.findByIdAndUpdate(
-            upd,{ description, statut },     
+            upd,{ name,firstName,description, statut },     
         );
         res.json({
             status: "success",
