@@ -1,26 +1,24 @@
 const express = require("express");
-const userRouter = require('./routes/userRoutes');
+const userRouter = require("./routes/userRoutes");
 const companyRouter = require("./routes/companyRoutes");
-const leadRouter = require("./routes/leadRoutes");
+const contactRouter = require("./routes/contactRoutes"); // Import the contact routes
 
-
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 dotenv.config();
-const {dbConnect} = require('./config/dbConnect');
+const { dbConnect } = require("./config/dbConnect");
 dbConnect();
 const app = express();
 
-//middlewares
+// Middlewares
 app.use(express.json());
 
-//routes
-app.use('/api/companies/',companyRouter);
-app.use('/api/users/',userRouter);
-app.use('/api/lead/',leadRouter);
+// Routes
+app.use("/api/companies/", companyRouter);
+app.use("/api/users/", userRouter);
+app.use("/api/contacts/", contactRouter); // Add the contacts route
 
-
-
- 
-//listen server
-const PORT = process.env.PORT||3000;
-app.listen(PORT,console.log(`server is running on ${PORT}`))
+// Listen server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
