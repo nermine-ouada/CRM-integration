@@ -1,6 +1,7 @@
 const express = require("express");
 const userRouter = require('./routes/userRoutes');
 const companyRouter = require("./routes/companyRoutes");
+const leadRouter = require("./routes/leadRoutes");
 
 
 const dotenv = require('dotenv');
@@ -15,6 +16,7 @@ app.use(express.json());
 //routes
 app.use('/api/companies/',companyRouter);
 app.use('/api/users/',userRouter);
+app.use('/api/lead/',leadRouter);
 
 
 
