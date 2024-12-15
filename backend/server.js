@@ -1,20 +1,24 @@
-const express = require("express");
 const userRouter = require('./routes/userRoutes');
 const companyRouter = require("./routes/companyRoutes");
-
 
 const dotenv = require('dotenv');
 dotenv.config();
 const {dbConnect} = require('./config/dbConnect');
 dbConnect();
-const app = express();
+const express = require("express");
+const bodyParser = require("body-parser");
 
+const app = express();
+app.use(bodyParser.json()); 
 //middlewares
 app.use(express.json());
+const cors = require("cors");
+app.use(cors());
 
 //routes
-app.use('/api/companies/',companyRouter);
-app.use('/api/users/',userRouter);
+app.use('/api/companies',companyRouter);
+app.use('/api/users',userRouter);
+
 
 
 

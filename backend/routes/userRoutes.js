@@ -12,7 +12,7 @@ const checkRole = require('../middlewares/checkRole');
 
 const userRouter = express.Router();
 
-userRouter.post("/", authMiddleware, checkRole(["admin","user"]), createUserContoller); 
+userRouter.post("/register", createUserContoller); 
 userRouter.get('/:id', authMiddleware, checkRole(["admin","user","rh"]), GetUserByIdContoller); 
 userRouter.get('/', authMiddleware,checkRole("rh"), GetAllUsersContoller); 
 userRouter.delete('/:id', authMiddleware, checkRole("admin"), deleteUserByIdContoller); 
