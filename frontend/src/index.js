@@ -1,34 +1,26 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Dashboard from "pages/Dashboard/Dashboard";
+import Login from "pages/auth/Login";
+import Register from "pages/auth/Register";
+import CompanyList from "pages/Dashboard/Company/CompanyList";
+import "./assets/styles/index.css"
+// Create a root
+const rootElement = document.getElementById("root");
+const root = ReactDOM.createRoot(rootElement);
 
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "assets/styles/tailwind.css";
-
-// layouts
-
-import Admin from "layouts/Admin.js";
-import Auth from "layouts/Auth.js";
-
-// views without layouts
-
-import Landing from "views/Landing.js";
-import Profile from "views/Profile.js";
-import Index from "views/Index.js";
-
-ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      {/* add routes with layouts */}
-      <Route path="/admin" component={Admin} />
-      <Route path="/auth" component={Auth} />
-      {/* add routes without layouts */}
-      <Route path="/landing" exact component={Landing} />
-      <Route path="/profile" exact component={Profile} />
-      <Route path="/" exact component={Index} />
-      {/* add redirect for first page */}
-      <Redirect from="*" to="/" />
-    </Switch>
-  </BrowserRouter>,
-  document.getElementById("root")
+// Render the components inside the Router component
+root.render(
+  <Router>
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/dashboard/*" element={<Dashboard />}>
+        <Route path="companies" element={<CompanyList />} />
+        {/* Add more nested routes here if needed */}
+      </Route>
+    </Routes>
+  </Router>
 );
