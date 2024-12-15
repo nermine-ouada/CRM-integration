@@ -5,15 +5,14 @@ const bcrypt = require('bcryptjs');
 const createUserContoller = async (req,res) =>{
     try {
 
-        const {name, firstName, login, password, role} = req.body;
+        const {name, email, password, role} = req.body;
 
         const salt=await bcrypt.genSalt(10);
         const hashedPassword=await bcrypt.hash(password,salt);
 
         const user = await User.create({
             name,
-            firstName,
-            login,
+           email,
             password: hashedPassword,
             role
         });
@@ -85,9 +84,9 @@ const updateUserByIdContoller = async (req,res) => {
     try {
 
         const userId = req.params.id;
-        const { name, firstName, login, password, role } = req.body;
+        const { name,  email, password, role } = req.body;
 
-        const updatedUser = await User.findByIdAndUpdate(userId, { name, firstName, login, password, role}, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(userId, { name,  email, password, role}, { new: true });
 
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
@@ -104,9 +103,9 @@ const updateUserByIdContoller = async (req,res) => {
 
 const loginController = async (req, res) => {
     try {
-        const { login, password } = req.body;
+        const { email, password } = req.body;
         
-        const user = await User.findOne({ login });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }

@@ -9,14 +9,10 @@ const postSchema = new mongoose.Schema({
         required : [true,"User name is required"],
     },
     
-    firstName :{
+    email: {
         type:String,
-        required : [true,"User firstName is required"],
-    },
-    login: {
-        type:String,
-        required: [true,"User login is required"],
-        unique: [true, "User login is unique"]
+        required: [true,"User email is required"],
+        unique: [true, "User email is unique"]
     },
     password: {
         type:String,
