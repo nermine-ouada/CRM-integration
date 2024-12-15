@@ -11,35 +11,11 @@ const checkRole = require("../middlewares/checkRole");
 
 const companyRouter = express.Router();
 
-companyRouter.post(
-  "/",
-  authMiddleware,
-  checkRole(["admin", "user"]),
-  createCompanyContoller
-);
-companyRouter.get(
-  "/:id",
-  authMiddleware,
-  checkRole(["admin", "user"]),
-  GetCompanyByIdContoller
-);
-companyRouter.get(
-  "/",
-  authMiddleware,
-  checkRole(["admin", "user"]),
-  GetAllCompaniesContoller
-);
-companyRouter.delete(
-  "/:id",
-  authMiddleware,
-  checkRole(["admin", "user"]),
-  deleteCompanyByIdContoller
-);
-companyRouter.put(
-  "/:id",
-  authMiddleware,
-  checkRole(["admin", "user"]),
-  updateCompanyByIdContoller
-);
+companyRouter.post("/",createCompanyContoller); 
+companyRouter.get('/:id', GetCompanyByIdContoller); 
+companyRouter.get('/', GetAllCompaniesContoller); 
+companyRouter.delete('/:id', deleteCompanyByIdContoller); 
+companyRouter.put('/:id',updateCompanyByIdContoller); 
+
 
 module.exports = companyRouter;

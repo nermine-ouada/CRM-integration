@@ -1,5 +1,5 @@
-const express = require("express");
-const userRouter = require("./routes/userRoutes");
+const userRouter = require('./routes/userRoutes');
+
 const companyRouter = require("./routes/companyRoutes");
 const contactRouter = require("./routes/contactRoutes");
 
@@ -7,16 +7,21 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { dbConnect } = require("./config/dbConnect");
 dbConnect();
+const express = require("express");
+const bodyParser = require("body-parser");
+
 const app = express();
+app.use(bodyParser.json()); 
+//middlewares
 
-// Middlewares
 app.use(express.json());
+const cors = require("cors");
+app.use(cors());
 
-// Routes
 app.use("/api/companies/", companyRouter);
 app.use("/api/users/", userRouter);
 app.use("/api/contacts/", contactRouter);
-
+*
 // Listen server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
