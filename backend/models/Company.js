@@ -1,32 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-
-
-const postSchema = new mongoose.Schema({
-
-    name :{
-        type:String,
-        required : [true,"Company name is required"],
+const postSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Company name is required"],
     },
-    
-    sector :{
-        type:String,
-        required : [true,"Company sector is required"],
+
+    sector: {
+      type: String,
+      required: [true, "Company sector is required"],
     },
     telephone: {
-        type:String,
-        required: [true,"Company telephone is required"],
+      type: String,
+      required: [true, "Company telephone is required"],
     },
     adresse: {
-        type:String,
-        required: [true,"Company adresse is required"],
-    }
-},{
-    timestamps:true,
+      type: String,
+      required: [true, "Company adresse is required"],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-});
-
-
-
-const Company = mongoose.model("Company",postSchema);
-module.exports=Company;
+const Company = mongoose.model("Company", postSchema);
+module.exports = Company;

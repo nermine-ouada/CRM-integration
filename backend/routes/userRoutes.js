@@ -5,10 +5,10 @@ const {
   deleteUserByIdContoller,
   updateUserByIdContoller,
   createUserContoller,
-  loginController
-} = require('../controllers/userController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const checkRole = require('../middlewares/checkRole');
+  loginController,
+} = require("../controllers/userController");
+const authMiddleware = require("../middlewares/authMiddleware");
+const checkRole = require("../middlewares/checkRole");
 
 const userRouter = express.Router();
 
@@ -19,5 +19,5 @@ userRouter.delete('/:id', authMiddleware, checkRole("admin"), deleteUserByIdCont
 userRouter.put('/:id', authMiddleware, checkRole("admin"), updateUserByIdContoller); 
 userRouter.post("/login", loginController); 
 
-module.exports = userRouter;
 
+module.exports = userRouter;
