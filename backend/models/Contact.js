@@ -30,6 +30,11 @@ const contactSchema = new mongoose.Schema(
       default: "active",
       required: [true, "Contact status is required"],
     },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      required: [true, "Contact must be associated with a company"],
+    },
   },
   {
     timestamps: true,

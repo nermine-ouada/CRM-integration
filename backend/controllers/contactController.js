@@ -1,9 +1,16 @@
 const Contact = require("../models/Contact");
+const Company = require("../models/Company");
 
-// Create a new contact
 const createContact = async (req, res) => {
   try {
-    const contact = new Contact(req.body);
+    const { company, ...contactData } = req.body;
+
+    const existingCompany = await Company.findById(company);
+    if (!existingCompany) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    const contact = new Contact({ ...contactData, company });
     const savedContact = await contact.save();
     res.status(201).json(savedContact);
   } catch (error) {
@@ -11,21 +18,26 @@ const createContact = async (req, res) => {
   }
 };
 
-// Get all contacts
 const getAllContacts = async (req, res) => {
   try {
-    const contacts = await Contact.find();
+    const contacts = await Contact.find().populate({
+      path: "company",
+      select: "name adresse telephone sector createdAt updatedAt",
+    });
     res.status(200).json(contacts);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get contact by ID
 const getContactById = async (req, res) => {
   try {
     const { id } = req.params;
-    const contact = await Contact.findById(id);
+
+    const contact = await Contact.findById(id).populate({
+      path: "company",
+      select: "name adresse telephone sector createdAt updatedAt",
+    });
     if (!contact) {
       return res.status(404).json({ message: "Contact not found" });
     }
@@ -35,14 +47,25 @@ const getContactById = async (req, res) => {
   }
 };
 
-// Update contact by ID
 const updateContact = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (req.body.company) {
+      const existingCompany = await Company.findById(req.body.company);
+      if (!existingCompany) {
+        return res.status(404).json({ message: "Company not found" });
+      }
+    }
+
     const updatedContact = await Contact.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
+    }).populate({
+      path: "company",
+      select: "name adresse telephone sector createdAt updatedAt",
     });
+
     if (!updatedContact) {
       return res.status(404).json({ message: "Contact not found" });
     }
@@ -52,7 +75,6 @@ const updateContact = async (req, res) => {
   }
 };
 
-// Delete contact by ID
 const deleteContact = async (req, res) => {
   try {
     const { id } = req.params;

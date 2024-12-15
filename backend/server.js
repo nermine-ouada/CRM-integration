@@ -1,7 +1,7 @@
 const express = require("express");
 const userRouter = require("./routes/userRoutes");
 const companyRouter = require("./routes/companyRoutes");
-const contactRouter = require("./routes/contactRoutes"); // Import the contact routes
+const contactRouter = require("./routes/contactRoutes");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -15,7 +15,7 @@ app.use(express.json());
 // Routes
 app.use("/api/companies/", companyRouter);
 app.use("/api/users/", userRouter);
-app.use("/api/contacts/", contactRouter); // Add the contacts route
+app.use("/api/contacts/", contactRouter);
 
 // Listen server
 const PORT = process.env.PORT || 3000;
