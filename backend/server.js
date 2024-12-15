@@ -21,7 +21,6 @@ app.use(cors());
 app.use("/api/companies/", companyRouter);
 app.use("/api/users/", userRouter);
 app.use("/api/contacts/", contactRouter);
-*
 // Listen server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

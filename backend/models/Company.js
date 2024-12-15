@@ -6,7 +6,6 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, "Company name is required"],
     },
-
     sector: {
       type: String,
       required: [true, "Company sector is required"],
@@ -17,7 +16,13 @@ const postSchema = new mongoose.Schema(
     },
     adresse: {
       type: String,
-      required: [true, "Company adresse is required"],
+      required: [true, "Company address is required"],
+    },
+    email: {
+      type: String,
+      required: [true, "Company email is required"],
+      unique: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'], // Ensure it's a valid email
     },
   },
   {
