@@ -5,19 +5,38 @@ const {
   deleteUserByIdContoller,
   updateUserByIdContoller,
   createUserContoller,
-  loginController
-} = require('../controllers/userController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const checkRole = require('../middlewares/checkRole');
+  loginController,
+} = require("../controllers/userController");
+const authMiddleware = require("../middlewares/authMiddleware");
+const checkRole = require("../middlewares/checkRole");
 
 const userRouter = express.Router();
 
-userRouter.post("/", authMiddleware, checkRole(["admin","user"]), createUserContoller); 
-userRouter.get('/:id', authMiddleware, checkRole(["admin","user","rh"]), GetUserByIdContoller); 
-userRouter.get('/', authMiddleware,checkRole("rh"), GetAllUsersContoller); 
-userRouter.delete('/:id', authMiddleware, checkRole("admin"), deleteUserByIdContoller); 
-userRouter.put('/:id', authMiddleware, checkRole("admin"), updateUserByIdContoller); 
-userRouter.post("/login", loginController); 
+userRouter.post(
+  "/",
+  authMiddleware,
+  checkRole(["admin", "user"]),
+  createUserContoller
+);
+userRouter.get(
+  "/:id",
+  authMiddleware,
+  checkRole(["admin", "user", "rh"]),
+  GetUserByIdContoller
+);
+userRouter.get("/", authMiddleware, checkRole("rh"), GetAllUsersContoller);
+userRouter.delete(
+  "/:id",
+  authMiddleware,
+  checkRole("admin"),
+  deleteUserByIdContoller
+);
+userRouter.put(
+  "/:id",
+  authMiddleware,
+  checkRole("admin"),
+  updateUserByIdContoller
+);
+userRouter.post("/login", loginController);
 
 module.exports = userRouter;
-
