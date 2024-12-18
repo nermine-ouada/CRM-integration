@@ -1,122 +1,128 @@
-import React, { useState, useEffect } from "react";
-import ContactService from "services/ContactService"; // Adjust the import path as necessary
-import CompanyService from "services/CompanyService"; // Service to fetch companies
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CompanyService from "services/CompanyService";
 
-const AddContact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "consultant", // Default role
-    customRole: "", // For custom role
-    status: "active", // Default status
-    company: "", // Selected company ID
-  });
-  const [companies, setCompanies] = useState([]); // List of companies
-
-  useEffect(() => {
-    // Fetch all companies on component mount
-    const fetchCompanies = async () => {
-      try {
-        const response = await CompanyService.getAll();
-        setCompanies(response.data); // Assuming the data is an array of companies
-      } catch (error) {
-        console.error("Error fetching companies:", error);
-      }
-    };
-
-    fetchCompanies();
-  }, []);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    // Auto-generate password when name changes
-    if (name === "name") {
-      setFormData((prevData) => ({
-        ...prevData,
-        password: value.toLowerCase().replace(/\s+/g, "") + "123",
-      }));
-    }
-  };
-
-  const handleRoleChange = (e) => {
-    const selectedRole = e.target.value;
-    setFormData((prevData) => ({
-      ...prevData,
-      role: selectedRole,
-    }));
-
-    // Reset custom role if "Other" is not selected
-    if (selectedRole !== "other") {
-      setFormData((prevData) => ({
-        ...prevData,
-        customRole: "",
-      }));
-    }
-  };
+const AddCompany = () => {
+  const [name, setName] = useState("");
+  const [sector, setSector] = useState("");
+  const [telephone, setTelephone] = useState("");
+  const [adresse, setAdresse] = useState("");
+  const [email, setEmail] = useState(""); // New email state
+  const [sectorOtherVisible, setSectorOtherVisible] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, role, customRole, status, company } =
-      formData;
-
-    // Use customRole if role is "Other"
-    const finalRole = role === "other" ? customRole : role;
-
-    // Basic validation
-    if (!name || !email || !password || !finalRole || !company) {
-      alert("All fields are required.");
-      return;
-    }
-
     try {
-      const contactData = {
-        name,
-        email,
-        password,
-        role: finalRole,
-        status,
-        company,
-      };
-      const result = await ContactService.addContact(contactData);
-      alert("Contact added successfully!");
-      console.log(result);
-
-      // Reset form fields
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        role: "consultant",
-        customRole: "",
-        status: "active",
-        company: "",
-      });
+      await CompanyService.create(name, sector, telephone, adresse, email); // Pass email
+      navigate("/dashboard/companies"); // Redirect after successful addition
     } catch (error) {
-      console.error("Error adding contact:", error);
-      alert(
-        error.response?.data?.message ||
-          "There was an error adding the contact. Please try again."
-      );
+      console.error("Error adding company", error);
+    }
+  };
+
+  const handleSectorChange = (e) => {
+    const value = e.target.value;
+    setSector(value);
+    if (value === "Other") {
+      setSectorOtherVisible(true);
+    } else {
+      setSectorOtherVisible(false);
     }
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Add New Contact</h2>
+      <h2 className="mb-6 text-2xl font-bold">Add New Company</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block mb-2 font-bold">Name</label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-2 border rounded"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-2 font-bold">Sector</label>
+          <select
+            value={sector}
+            onChange={handleSectorChange}
+            className="w-full px-4 py-2 border rounded"
+            required
+          >
+            <option value="" disabled>
+              Select a sector
+            </option>
+            <option value="Technology">Technology</option>
+            <option value="Finance">Finance</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Education">Education</option>
+            <option value="Other">Other</option>
+          </select>
+          {sectorOtherVisible && (
+            <input
+              type="text"
+              value={sector}
+              onChange={(e) => setSector(e.target.value)}
+              placeholder="Specify other sector"
+              className="w-full px-4 py-2 mt-2 border rounded"
+            />
+          )}
+        </div>
+        <div className="mb-4">
+          <label className="block mb-2 font-bold">Telephone</label>
+          <div className="flex items-center border rounded">
+            <select
+              value={telephone}
+              onChange={(e) => setTelephone(e.target.value)}
+              className="w-1/4 px-4 py-2 border-r rounded-l"
+              required
+            >
+              <option value="" disabled>
+                Select country code
+              </option>
+              <option value="+216">+216 (Tunisia)</option>
+              <option value="+1">+1 (USA/Canada)</option>
+              <option value="+44">+44 (UK)</option>
+              <option value="+33">+33 (France)</option>
+              <option value="+49">+49 (Germany)</option>
+              <option value="+61">+61 (Australia)</option>
+              <option value="+81">+81 (Japan)</option>
+              <option value="+82">+82 (South Korea)</option>
+              <option value="+86">+86 (China)</option>
+              <option value="+91">+91 (India)</option>
+              <option value="+52">+52 (Mexico)</option>
+              <option value="+34">+34 (Spain)</option>
+              <option value="+39">+39 (Italy)</option>
+              <option value="+86">+86 (Mainland China)</option>
+              <option value="+55">+55 (Brazil)</option>
+              <option value="+55">+55 (Brazil)</option>
+              <option value="+49">+49 (Germany)</option>
+              <option value="+34">+34 (Spain)</option>
+              <option value="+81">+81 (Japan)</option>
+              <option value="+82">+82 (South Korea)</option>
+              <option value="+86">+86 (China)</option>
+              <option value="+44">+44 (UK)</option>
+            </select>
+            <input
+              type="text"
+              value={telephone}
+              onChange={(e) => setTelephone(e.target.value)}
+              className="w-3/4 px-4 py-2 border rounded-r"
+              placeholder="Enter phone number"
+              required
+            />
+          </div>
+        </div>
+        <div className="mb-4">
+          <label className="block mb-2 font-bold">Address</label>
+          <input
+            type="text"
+            value={adresse}
+            onChange={(e) => setAdresse(e.target.value)}
             className="w-full px-4 py-2 border rounded"
             required
           />
@@ -125,91 +131,21 @@ const AddContact = () => {
           <label className="block mb-2 font-bold">Email</label>
           <input
             type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border rounded"
             required
           />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-bold">Password</label>
-          <input
-            type="text"
-            name="password"
-            value={formData.password}
-            readOnly
-            className="w-full px-4 py-2 border rounded bg-gray-100"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-bold">Role</label>
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleRoleChange}
-            className="w-full px-4 py-2 border rounded"
-            required
-          >
-            <option value="consultant">Consultant</option>
-            <option value="RH">RH</option>
-            <option value="manager">Manager</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        {formData.role === "other" && (
-          <div className="mb-4">
-            <label className="block mb-2 font-bold">Custom Role</label>
-            <input
-              type="text"
-              name="customRole"
-              value={formData.customRole}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-        )}
-        <div className="mb-4">
-          <label className="block mb-2 font-bold">Status</label>
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
-            required
-          >
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="pending">Pending</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-bold">Company</label>
-          <select
-            name="company"
-            value={formData.company}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
-            required
-          >
-            <option value="">Select a Company</option>
-            {companies.map((comp) => (
-              <option key={comp._id} value={comp._id}>
-                {comp.name}
-              </option>
-            ))}
-          </select>
         </div>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="px-4 py-2 text-white bg-blue-500 rounded"
         >
-          Add Contact
+          Save Changes
         </button>
       </form>
     </div>
   );
 };
 
-export default AddContact;
+export default AddCompany;
