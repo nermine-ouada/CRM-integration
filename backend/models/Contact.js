@@ -6,34 +6,42 @@ const contactSchema = new mongoose.Schema(
       type: String,
       required: [true, "Contact name is required"],
     },
-    firstName: {
+    email: {
       type: String,
-      required: [true, "Contact first name is required"],
-    },
-    login: {
-      type: String,
-      required: [true, "Contact login is required"],
-      unique: [true, "Contact login must be unique"],
+      required: [true, "Contact email is required"],
+      unique: [true, "Contact email must be unique"],
     },
     password: {
       type: String,
       required: [true, "Contact password is required"],
-      unique: [true, "Contact password must be unique"],
     },
     role: {
       type: String,
       required: [true, "Contact role is required"],
+      default: "user",
     },
     status: {
       type: String,
-      enum: ["active", "inactive", "pending"],
+      enum: {
+        values: ["active", "inactive", "pending"],
+        message: "Status must be one of 'active', 'inactive', or 'pending'",
+      },
       default: "active",
-      required: [true, "Contact status is required"],
     },
     company: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
       required: [true, "Contact must be associated with a company"],
+    },
+    login: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows multiple null values if login is optional
+      default: function () {
+        return `${this.name.toLowerCase().replace(/\s+/g, "")}${Math.floor(
+          Math.random() * 1000
+        )}`;
+      },
     },
   },
   {

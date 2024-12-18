@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
-import ContactService from "services/ContactService"; // Adjust the import path as necessary
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import ContactService from "services/ContactService"; // Adjust the import path if necessary
 import CompanyService from "services/CompanyService"; // Service to fetch companies
 
-const AddContact = () => {
+const EditContact = () => {
+  const { id } = useParams(); // Get the contact ID from the URL
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,22 +28,32 @@ const AddContact = () => {
     };
 
     fetchCompanies();
+    fetchContact();
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const fetchContact = async () => {
+    try {
+      const data = await ContactService.getContactById(id);
+      setFormData({
+        name: data.name,
+        email: data.email,
+        password: data.password, // Assuming password is also returned
+        role: data.role,
+        status: data.status,
+        company: data.company,
+      }); // Populate the form with the contact's current data
+    } catch (error) {
+      console.error("Error fetching contact:", error.message);
+    }
+  };
+
+  const handleNameChange = (e) => {
+    const newName = e.target.value;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      name: newName,
+      password: newName.toLowerCase().replace(/\s+/g, "") + "123", // Auto-generate password
     }));
-
-    // Auto-generate password when name changes
-    if (name === "name") {
-      setFormData((prevData) => ({
-        ...prevData,
-        password: value.toLowerCase().replace(/\s+/g, "") + "123",
-      }));
-    }
   };
 
   const handleRoleChange = (e) => {
@@ -60,63 +72,63 @@ const AddContact = () => {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, role, customRole, status, company } =
-      formData;
 
     // Use customRole if role is "Other"
-    const finalRole = role === "other" ? customRole : role;
+    const finalRole =
+      formData.role === "other" ? formData.customRole : formData.role;
 
     // Basic validation
-    if (!name || !email || !password || !finalRole || !company) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !finalRole ||
+      !formData.company
+    ) {
       alert("All fields are required.");
       return;
     }
 
     try {
       const contactData = {
-        name,
-        email,
-        password,
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
         role: finalRole,
-        status,
-        company,
+        status: formData.status,
+        company: formData.company,
       };
-      const result = await ContactService.addContact(contactData);
-      alert("Contact added successfully!");
-      console.log(result);
-
-      // Reset form fields
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        role: "consultant",
-        customRole: "",
-        status: "active",
-        company: "",
-      });
+      await ContactService.updateContact(id, contactData);
+      window.location.href = "/contacts"; // Redirect to contact list
     } catch (error) {
-      console.error("Error adding contact:", error);
+      console.error("Error updating contact:", error.message);
       alert(
         error.response?.data?.message ||
-          "There was an error adding the contact. Please try again."
+          "There was an error updating the contact. Please try again."
       );
     }
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Add New Contact</h2>
+      <h2 className="text-2xl font-bold mb-6">Edit Contact</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block mb-2 font-bold">Name</label>
           <input
             type="text"
-            name="name"
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={handleNameChange}
             className="w-full px-4 py-2 border rounded"
             required
           />
@@ -125,9 +137,8 @@ const AddContact = () => {
           <label className="block mb-2 font-bold">Email</label>
           <input
             type="email"
-            name="email"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="w-full px-4 py-2 border rounded"
             required
           />
@@ -136,7 +147,6 @@ const AddContact = () => {
           <label className="block mb-2 font-bold">Password</label>
           <input
             type="text"
-            name="password"
             value={formData.password}
             readOnly
             className="w-full px-4 py-2 border rounded bg-gray-100"
@@ -145,7 +155,6 @@ const AddContact = () => {
         <div className="mb-4">
           <label className="block mb-2 font-bold">Role</label>
           <select
-            name="role"
             value={formData.role}
             onChange={handleRoleChange}
             className="w-full px-4 py-2 border rounded"
@@ -162,9 +171,10 @@ const AddContact = () => {
             <label className="block mb-2 font-bold">Custom Role</label>
             <input
               type="text"
-              name="customRole"
               value={formData.customRole}
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setFormData({ ...formData, customRole: e.target.value })
+              }
               className="w-full px-4 py-2 border rounded"
               required
             />
@@ -173,9 +183,8 @@ const AddContact = () => {
         <div className="mb-4">
           <label className="block mb-2 font-bold">Status</label>
           <select
-            name="status"
             value={formData.status}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="w-full px-4 py-2 border rounded"
             required
           >
@@ -187,9 +196,8 @@ const AddContact = () => {
         <div className="mb-4">
           <label className="block mb-2 font-bold">Company</label>
           <select
-            name="company"
             value={formData.company}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="w-full px-4 py-2 border rounded"
             required
           >
@@ -205,11 +213,11 @@ const AddContact = () => {
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded"
         >
-          Add Contact
+          Update Contact
         </button>
       </form>
     </div>
   );
 };
 
-export default AddContact;
+export default EditContact;
