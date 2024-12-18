@@ -93,6 +93,26 @@ const updateCompanyByIdContoller = async (req, res) => {
     res.json(error.message);
   }
 };
+const getAllContactsByCompanyIdController = async (req, res) => {
+  try {
+    const companyId = req.params.id;
+
+    const company = await Company.findById(companyId).populate("contacts");
+
+    if (!company) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    res.json({
+      status: "success",
+      data: company.contacts,
+    });
+  } catch (error) {
+    console.error("Error fetching contacts:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 
 module.exports = {
   createCompanyContoller,
@@ -100,4 +120,6 @@ module.exports = {
   GetAllCompaniesContoller,
   deleteCompanyByIdContoller,
   updateCompanyByIdContoller,
+  getAllContactsByCompanyIdController, // Export the new controller
 };
+

@@ -5,6 +5,7 @@ const {
   GetAllCompaniesContoller,
   deleteCompanyByIdContoller,
   updateCompanyByIdContoller,
+  getAllContactsByCompanyIdController,
 } = require("../controllers/companyController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const checkRole = require("../middlewares/checkRole");
@@ -16,6 +17,6 @@ companyRouter.get('/:id', GetCompanyByIdContoller);
 companyRouter.get('/', GetAllCompaniesContoller); 
 companyRouter.delete('/:id', deleteCompanyByIdContoller); 
 companyRouter.put('/:id',updateCompanyByIdContoller); 
-
+companyRouter.get("/:id/contacts",getAllContactsByCompanyIdController)
 
 module.exports = companyRouter;
