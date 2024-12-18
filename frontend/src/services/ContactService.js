@@ -61,12 +61,19 @@ const deleteContact = async (id) => {
   return response.data;
 };
 
+// Fetch all contacts for a specific company
+const getAllContactsByCompany = async (companyId) => {
+  const response = await axios.get(`/company/${companyId}/contacts`);
+  return response.data;
+};
+
 const ContactService = {
   getAllContacts,
   getContactById,
   createContact,
   updateContact,
   deleteContact,
+  getAllContactsByCompany, // New method
 };
 
 export default ContactService;

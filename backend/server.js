@@ -16,11 +16,14 @@ app.use(bodyParser.json());
 
 app.use(express.json());
 const cors = require("cors");
+const leadRouter = require('./routes/leadRoutes');
 app.use(cors());
 
 app.use("/api/companies/", companyRouter);
 app.use("/api/users/", userRouter);
 app.use("/api/contacts/", contactRouter);
+app.use("/api/leads/", leadRouter);
+
 // Listen server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

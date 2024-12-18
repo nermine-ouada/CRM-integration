@@ -7,6 +7,7 @@ import EditCompany from "./Company/EditCompany";
 import ContactList from "./Contact/ContactList";
 import AddContact from "./Contact/AddContact";
 import EditContact from "./Contact/EditContact";
+import CompanyContacts from "./Company/CompanyContacts";
 
 const Dashboard = () => {
   return (
@@ -17,7 +18,10 @@ const Dashboard = () => {
           <Route path="/companies" element={<CompanyList />} />
           <Route path="/companies/add" element={<AddCompany />} />
           <Route path="/companies/edit/:id" element={<EditCompany />} />
-
+          <Route
+            path="/companies/:id/contacts"
+            element={<CompanyContacts />}
+          />
           <Route path="/contacts" element={<ContactList />} />
           <Route path="/contacts/add" element={<AddContact />} />
           <Route path="/contacts/edit/:id" element={<EditContact />} />

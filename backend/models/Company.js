@@ -22,8 +22,14 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, "Company email is required"],
       unique: true,
-      match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'], // Ensure it's a valid email
+      match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"], // Ensure it's a valid email
     },
+    contacts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Contact", // Reference to Contact schema
+      },
+    ],
   },
   {
     timestamps: true,

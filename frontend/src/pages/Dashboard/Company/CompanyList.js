@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import CompanyService from "services/CompanyService";
 
 const CompanyList = () => {
   const [companies, setCompanies] = useState([]);
+  const navigate = useNavigate(); // Use navigate for redirection
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -35,6 +36,10 @@ const CompanyList = () => {
     }
   };
 
+  const handleViewContacts = (id) => {
+    navigate(`/dashboard/companies/${id}/contacts`); // Navigate to the contacts page
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Companies</h2>
@@ -60,8 +65,7 @@ const CompanyList = () => {
             <tr key={company._id} className="border-t">
               <td className="py-2 px-4">{company.name}</td>
               <td className="py-2 px-4">{company.sector}</td>
-              <td className="py-2 px-4">{company.email}</td>{" "}
-              {/* Display email */}
+              <td className="py-2 px-4">{company.email}</td>
               <td className="py-2 px-4">{company.telephone}</td>
               <td className="py-2 px-4">{company.adresse}</td>
               <td className="py-2 px-4">
@@ -76,6 +80,12 @@ const CompanyList = () => {
                   className="bg-red-500 text-white px-4 py-1 rounded"
                 >
                   Delete
+                </button>
+                <button
+                  onClick={() => handleViewContacts(company._id)}
+                  className="ml-2 bg-green-500 text-white px-4 py-1 rounded"
+                >
+                  View All Contacts
                 </button>
               </td>
             </tr>
